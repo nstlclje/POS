@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point of Sales System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #F2ECBE; /* Changed background color */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .order-section, .menu-section, .cash-section {
+            margin-bottom: 20px;
+        }
+
+        .menu-item, button {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #E2C799; /* Changed button background color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+        }
+
+        .menu-item:hover, button:hover {
+            background-color: #C08261; /* Changed button hover background color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the canteen! Here are our street foods menu.</h1>
+        <p>Prices are shown below. <i>Click finalize order button once you're sure with your orders.</i></p>
+        <div class="order-section">
+            <h2>Pick Order</h2>
+            <div id="orderList"></div>
+            <p>Total Price: ₱<span id="totalPrice">0</span></p> <!-- Replaced $ with ₱ for peso sign -->
+            <button id="finalizeOrderBtn" onclick="finalizeOrder()">Finalize Order</button>
+        </div>
+        <div class="menu-section">
+            <h2>Menu</h2>
+            <div id="menuItems">
+                <div class="menu-item" onclick="addToOrder('Fries', 50)">Fries - ₱50</div> <!-- Replaced $ with ₱ for peso sign -->
+                <div class="menu-item" onclick="addToOrder('Burger', 60)">Burger - ₱60</div> <!-- Replaced $ with ₱ for peso sign -->
+                <div class="menu-item" onclick="addToOrder('Noodles', 40)">Noodles - ₱40</div> <!-- Replaced $ with ₱ for peso sign -->
+                <div class="menu-item" onclick="addToOrder('Coke', 25)">Coke - ₱25</div> <!-- Replaced $ with ₱ for peso sign -->
+            </div>
+        </div>
+        <div class="cash-section">
+            <h2>Cash</h2>
+            <input type="number" id="cashInput" placeholder="Enter Cash Amount">
+            <button onclick="pay()">Pay</button>
+        </div>
+    </div>
+    <script>
+        let order = [];
+        let totalPrice = 0;
+
+        function addToOrder(item, price) {
+            const existingItem = order.find(elem => elem.name === item);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                order.push({ name: item, price: price, quantity: 1 });
+            }
+            totalPrice += price;
+            updateOrderList();
+        }
+
+        function updateOrderList() {
+            const orderList = document.getElementById('orderList');
+            orderList.innerHTML = '';
+            order.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.textContent = `${item.name} x${item.quantity} - ₱${item.price * item.quantity}`; // Replaced $ with ₱ for peso sign
+                orderList.appendChild(itemDiv);
+            });
+            document.getElementById('totalPrice').textContent = totalPrice;
+        }
+
+        function finalizeOrder() {
+            if (order.length === 0) {
+                alert('Order first!');
+            } else {
+                alert('Please proceed to payment.'); 
+            }
+        }
+
+        function resetOrder() {
+            order = [];
+            totalPrice = 0;
+            updateOrderList();
+        }
+
+        function pay() {
+            if (order.length === 0) {
+                alert('Order first!');
+            } else {
+                const cashInput = document.getElementById('cashInput').value;
+                const change = cashInput - totalPrice;
+                if (change >= 0) {
+                    alert('Payment successful! Change: ₱' + change); // Replaced $ with ₱ for peso sign
+                    resetOrder();
+                } else {
+                    alert('Insufficient cash!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
